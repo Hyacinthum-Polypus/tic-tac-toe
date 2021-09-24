@@ -43,7 +43,7 @@ bool init()
       }
       else
       {
-        SDL_SetRenderDrawColor(gRenderer, 1, 1, 1, 1);
+        SDL_SetRenderDrawColor(gRenderer, 255, 255, 255, 255);
 
         if(!(IMG_Init(IMG_INIT_PNG)|IMG_INIT_PNG))
         {
