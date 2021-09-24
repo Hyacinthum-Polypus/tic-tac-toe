@@ -35,7 +35,7 @@ bool Sprite::loadFromFile(std::string path)
   }
   else
   {
-    SDL_SetColorKey(loadedSurface, SDL_FALSE, SDL_MapRGB(loadedSurface->format, 0, 0, 0));
+    SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 255, 255, 255));
     mTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
     if(mTexture == NULL)
     {
