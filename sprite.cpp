@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <main.h>
+#include "sprite.h"
+#include "main.h"
 
 Sprite::Sprite()
 {
@@ -27,7 +28,7 @@ void Sprite::free()
 bool Sprite::loadFromFile(std::string path)
 {
   free();
-  SDL_Surface loadedSurface = IMG_Load(path.c_str());
+  SDL_Surface* loadedSurface = IMG_Load(path.c_str());
   if(loadedSurface == NULL)
   {
     printf("Failed to load %s. SDL_image Error: %s\n", IMG_GetError());
@@ -56,19 +57,19 @@ bool Sprite::loadFromRenderedText(std::string textTexture, SDL_Color textColor)
   return 0;
 }
 
-void render(int x, int y)
+void Sprite::render(int x, int y)
 {
   SDL_Rect mRect = {x, y, mWidth, mHeight};
 
-  SDL_RenderCopy(gRenderer, mTexture, NULL, mRect);
+  SDL_RenderCopy(gRenderer, mTexture, NULL, &mRect);
 }
 
-int getWidth()
+int Sprite::getWidth()
 {
   return mWidth;
 }
 
-int getHeight()
+int Sprite::getHeight()
 {
   return mHeight;
 }

@@ -3,12 +3,18 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include "sprite.h"
+#include "main.h"
 
 const int SCREEN_WDITH = 640;
 const int SCREEN_HEIGHT = 480;
 
-SDL_Window* gWindow;
-SDL_Renderer* gRenderer;
+SDL_Window* gWindow = NULL;
+SDL_Renderer* gRenderer = NULL;
+
+Sprite ticTacToe;
+Sprite imageO;
+Sprite imageX;
 
 bool init()
 {
@@ -62,8 +68,32 @@ bool init()
   return success;
 }
 
+bool loadMedia()
+{
+  bool success = true;
+  if(!ticTacToe.loadFromFile("media/tic-tac-toe.png"))
+  {
+    success = false;
+  }
+
+  if(!imageO.loadFromFile("media/o.png"))
+  {
+    success = false;
+  }
+
+  if(!imageX.loadFromFile("media/x.png"))
+  {
+    success = false;
+  }
+  return success;
+}
+
 void close()
 {
+  ticTacToe.free();
+  imageO.free();
+  imageX.free();
+
   SDL_DestroyRenderer(gRenderer);
   gRenderer = NULL;
 
@@ -80,13 +110,34 @@ int main()
 {
   if(!init())
   {
-    printf("Failed to initalize!");
+    printf("Failed to initalize!\n");
   }
   else
   {
-    SDL_RenderClear(gRenderer);
-    SDL_RenderPresent(gRenderer);
-    SDL_Delay(2000);
+    if(!loadMedia())
+    {
+      printf("Failed to load all media!\n");
+    }
+    else
+    {
+      bool quit = false;
+
+      SDL_Event e;
+
+      while(!quit)
+      {
+        while(SDL_PollEvent(&e) != 0)
+        {
+          if(e.type == SDL_QUIT)
+          {
+            quit = true;
+          }
+        }
+        SDL_RenderClear(gRenderer);
+        ticTacToe.render(0, 0);
+        SDL_RenderPresent(gRenderer);
+      }
+    }
   }
   close();
   return 0;
