@@ -64,6 +64,12 @@ bool init()
 
 void close()
 {
+  SDL_DestroyRenderer(gRenderer);
+  gRenderer = NULL;
+
+  SDL_DestroyWindow(gWindow);
+  gWindow = NULL;
+
   IMG_Quit();
   TTF_Quit();
   Mix_Quit();
