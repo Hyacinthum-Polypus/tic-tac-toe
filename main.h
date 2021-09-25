@@ -8,6 +8,7 @@ extern SDL_Renderer* gRenderer;
 extern TTF_Font* gFont;
 extern Sprite oTexture;
 extern Sprite xTexture;
+extern Sprite blankTexture;
 extern bool yourTurn;
 
 #endif

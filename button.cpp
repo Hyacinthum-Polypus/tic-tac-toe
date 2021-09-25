@@ -57,9 +57,11 @@ void Button::eventHandle(SDL_Event &e)
 
     if(mouseOver)
     {
-      printf("Button Pressed!\n");
-      mSprite = &xTexture;
-      yourTurn = false;
+      if(mSprite == &blankTexture)
+      {
+        mSprite = &xTexture;
+        yourTurn = false;
+      }
     }
     else
     {

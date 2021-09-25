@@ -26,6 +26,17 @@ bool yourTurn = true;
 const int BUTTON_TOTAL = 9;
 Button buttons[BUTTON_TOTAL];
 
+void aiTurn();
+
+enum winState
+{
+  NO_WINNER,
+  PLAYER_WINNER,
+  BOT_WINNER
+};
+
+winState checkWinState();
+
 bool init()
 {
   bool success = true;
@@ -157,7 +168,6 @@ int main()
       for (size_t i = 0; i < BUTTON_TOTAL; i++) {
         int x = i / 3;
         int y = i % 3;
-        //printf("%d, %d, %d\n", i, x, y);
         buttons[i].init(x * 120, y * 90, &blankTexture);
       }
       while(!quit)
@@ -176,13 +186,25 @@ int main()
             }
           }
         }
-        if(yourTurn)
+        if(checkWinState() == NO_WINNER)
         {
-          turnTexture.loadFromRenderedText("Your Turn...", black);
+          if(yourTurn)
+          {
+            turnTexture.loadFromRenderedText("Your Turn...", black);
+          }
+          else
+          {
+            turnTexture.loadFromRenderedText("Their Turn...", black);
+          }
         }
-        else
+
+        if(checkWinState() == PLAYER_WINNER)
         {
-          turnTexture.loadFromRenderedText("Their Turn...", black);
+          turnTexture.loadFromRenderedText("You Win!!!", black);
+        }
+        else if(checkWinState() == BOT_WINNER)
+        {
+          turnTexture.loadFromRenderedText("Bot Wins!!!", black);
         }
 
         SDL_RenderClear(gRenderer);
@@ -194,23 +216,127 @@ int main()
         SDL_RenderPresent(gRenderer);
 
         //AI
-        if(!yourTurn)
+        if(!yourTurn && checkWinState() == NO_WINNER)
         {
-          SDL_Delay(500);
-          while(!yourTurn)
-          {
-            int i = rand() % 9;
-            if(buttons[i].getSprite() == &blankTexture)
-            {
-              buttons[i].setSprite(&oTexture);
-              yourTurn = true;
-            }
-          }
-
+          aiTurn();
         }
+        //checkWinState after AI turn
+
       }
     }
   }
   close();
   return 0;
+}
+
+void aiTurn()
+{
+  SDL_Delay(500);
+  while(!yourTurn)
+  {
+    int i = rand() % 9;
+    if(buttons[i].getSprite() == &blankTexture)
+    {
+      buttons[i].setSprite(&oTexture);
+      yourTurn = true;
+    }
+  }
+}
+
+winState checkWinState()
+{
+  winState currentWinState = NO_WINNER;
+
+  //Check if player winner
+  for (size_t x = 0; x < 3; x++) {
+    if(buttons[x].getSprite() == &xTexture)
+    {
+      if(buttons[x+3].getSprite() == &xTexture)
+      {
+        if(buttons[x+6].getSprite() == &xTexture)
+        {
+          currentWinState = PLAYER_WINNER;
+        }
+      }
+    }
+  }
+
+  for (size_t y = 0; y < 3; y++) {
+    if(buttons[y*3].getSprite() == &xTexture)
+    {
+      if(buttons[y*3+1].getSprite() == &xTexture)
+      {
+        if(buttons[y*3+2].getSprite() == &xTexture)
+        {
+          currentWinState = PLAYER_WINNER;
+        }
+      }
+    }
+  }
+
+  if(buttons[4].getSprite() == &xTexture)
+  {
+    if(buttons[0].getSprite() == &xTexture)
+    {
+      if(buttons[8].getSprite() == &xTexture)
+      {
+        currentWinState = PLAYER_WINNER;
+      }
+    }
+    if(buttons[2].getSprite() == &xTexture)
+    {
+      if(buttons[6].getSprite() == &xTexture)
+      {
+        currentWinState = PLAYER_WINNER;
+      }
+    }
+  }
+
+
+  //Check if AI winner
+  for (size_t x = 0; x < 3; x++) {
+    if(buttons[x].getSprite() == &oTexture)
+    {
+      if(buttons[x+3].getSprite() == &oTexture)
+      {
+        if(buttons[x+6].getSprite() == &oTexture)
+        {
+          currentWinState = BOT_WINNER;
+        }
+      }
+    }
+  }
+
+  for (size_t y = 0; y < 3; y++) {
+    if(buttons[y*3].getSprite() == &oTexture)
+    {
+      if(buttons[y*3+1].getSprite() == &oTexture)
+      {
+        if(buttons[y*3+2].getSprite() == &oTexture)
+        {
+          currentWinState = BOT_WINNER;
+        }
+      }
+    }
+  }
+
+  if(buttons[4].getSprite() == &oTexture)
+  {
+    if(buttons[0].getSprite() == &oTexture)
+    {
+      if(buttons[8].getSprite() == &oTexture)
+      {
+        currentWinState = BOT_WINNER;
+      }
+    }
+    if(buttons[2].getSprite() == &oTexture)
+    {
+      if(buttons[6].getSprite() == &oTexture)
+      {
+        currentWinState = BOT_WINNER;
+      }
+    }
+  }
+
+  return currentWinState;
 }
