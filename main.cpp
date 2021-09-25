@@ -7,8 +7,8 @@
 #include "main.h"
 #include "button.h"
 
-const int SCREEN_WDITH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WDITH = 360;
+const int SCREEN_HEIGHT = 310;
 
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
@@ -21,6 +21,7 @@ Sprite xTexture;
 Sprite blankTexture;
 Sprite turnTexture;
 
+SDL_Color black = {0,0,0,255};
 bool yourTurn = true;
 
 const int BUTTON_TOTAL = 9;
@@ -163,7 +164,7 @@ int main()
 
       SDL_Event e;
 
-      SDL_Color black = {0,0,0,255};
+      int currentTurn = 0;
 
       for (size_t i = 0; i < BUTTON_TOTAL; i++) {
         int x = i / 3;
@@ -186,6 +187,7 @@ int main()
             }
           }
         }
+        //Check win states
         if(checkWinState() == NO_WINNER)
         {
           if(yourTurn)
@@ -197,14 +199,18 @@ int main()
             turnTexture.loadFromRenderedText("Their Turn...", black);
           }
         }
-
-        if(checkWinState() == PLAYER_WINNER)
+        else if(checkWinState() == PLAYER_WINNER)
         {
           turnTexture.loadFromRenderedText("You Win!!!", black);
         }
         else if(checkWinState() == BOT_WINNER)
         {
           turnTexture.loadFromRenderedText("Bot Wins!!!", black);
+          yourTurn = false;
+        }
+        if(currentTurn >= 5)
+        {
+          turnTexture.loadFromRenderedText("Tie!!!", black);
           yourTurn = false;
         }
 
@@ -219,10 +225,10 @@ int main()
         //AI
         if(!yourTurn && checkWinState() == NO_WINNER)
         {
+          currentTurn++;
+          if(currentTurn < 5)
           aiTurn();
         }
-        //checkWinState after AI turn
-
       }
     }
   }
@@ -383,13 +389,19 @@ void aiTurn()
   }
 
   //Choice from randomness
+  int attempt = 0;
   while(!yourTurn)
   {
+    attempt++;
     int i = rand() % 9;
     if(buttons[i].getSprite() == &blankTexture)
     {
       buttons[i].setSprite(&oTexture);
       yourTurn = true;
+    }
+    if(attempt > 2)
+    {
+      return;
     }
   }
 }
