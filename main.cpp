@@ -5,6 +5,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "sprite.h"
 #include "main.h"
+#include "button.h"
 
 const int SCREEN_WDITH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -18,6 +19,8 @@ Sprite ticTacToe;
 Sprite oTexture;
 Sprite xTexture;
 Sprite turnTexture;
+
+Button testButton;
 
 bool init()
 {
@@ -145,7 +148,11 @@ int main()
     {
       bool quit = false;
 
+      bool yourTurn = true;
+
       SDL_Event e;
+
+      testButton.init(0, 0, &oTexture);
 
       while(!quit)
       {
@@ -155,11 +162,12 @@ int main()
           {
             quit = true;
           }
+
+          testButton.eventHandle(e);
         }
         SDL_RenderClear(gRenderer);
         ticTacToe.render(0, 0);
-        oTexture.render(0,0);
-        xTexture.render(0, 90);
+        testButton.render();
         turnTexture.render(0, 280);
         SDL_RenderPresent(gRenderer);
       }
