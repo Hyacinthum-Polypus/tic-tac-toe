@@ -2,6 +2,7 @@
 #include <string>
 #include "button.h"
 #include "sprite.h"
+#include "main.h"
 
 Button::Button()
 {
@@ -57,6 +58,8 @@ void Button::eventHandle(SDL_Event &e)
     if(mouseOver)
     {
       printf("Button Pressed!\n");
+      mSprite = &xTexture;
+      yourTurn = false;
     }
     else
     {
@@ -73,4 +76,9 @@ void Button::render()
 Sprite* Button::getSprite()
 {
   return mSprite;
+}
+
+void Button::setSprite(Sprite* sprite)
+{
+  mSprite = sprite;
 }

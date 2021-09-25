@@ -19,6 +19,8 @@ public:
 
   Sprite* getSprite();
 
+  void setSprite(Sprite* sprite);
+
 private:
   int mPosX, mPosY;
 

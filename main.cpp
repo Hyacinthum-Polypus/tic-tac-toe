@@ -21,6 +21,8 @@ Sprite xTexture;
 Sprite blankTexture;
 Sprite turnTexture;
 
+bool yourTurn = true;
+
 const int BUTTON_TOTAL = 9;
 Button buttons[BUTTON_TOTAL];
 
@@ -86,14 +88,6 @@ bool loadMedia()
     printf("Failed to load WorkSans as the global font. SDL_ttf Error: %s\n", TTF_GetError());
     success = false;
   }
-  else
-  {
-      SDL_Color black = {0,0,0,255};
-      if(!turnTexture.loadFromRenderedText("Your Turn...", black))
-      {
-        success = false;
-      }
-  }
 
   if(!ticTacToeTexture.loadFromFile("media/tic-tac-toe.png"))
   {
@@ -156,9 +150,9 @@ int main()
     {
       bool quit = false;
 
-      bool yourTurn = true;
-
       SDL_Event e;
+
+      SDL_Color black = {0,0,0,255};
 
       for (size_t i = 0; i < BUTTON_TOTAL; i++) {
         int x = i / 3;
@@ -182,6 +176,15 @@ int main()
             }
           }
         }
+        if(yourTurn)
+        {
+          turnTexture.loadFromRenderedText("Your Turn...", black);
+        }
+        else
+        {
+          turnTexture.loadFromRenderedText("Their Turn...", black);
+        }
+
         SDL_RenderClear(gRenderer);
         ticTacToeTexture.render(0, 0);
         for (size_t i = 0; i < BUTTON_TOTAL; i++) {
@@ -189,6 +192,22 @@ int main()
         }
         turnTexture.render(0, 280);
         SDL_RenderPresent(gRenderer);
+
+        //AI
+        if(!yourTurn)
+        {
+          SDL_Delay(500);
+          while(!yourTurn)
+          {
+            int i = rand() % 9;
+            if(buttons[i].getSprite() == &blankTexture)
+            {
+              buttons[i].setSprite(&oTexture);
+              yourTurn = true;
+            }
+          }
+
+        }
       }
     }
   }
