@@ -15,12 +15,14 @@ SDL_Renderer* gRenderer = NULL;
 
 TTF_Font* gFont = NULL;
 
-Sprite ticTacToe;
+Sprite ticTacToeTexture;
 Sprite oTexture;
 Sprite xTexture;
+Sprite blankTexture;
 Sprite turnTexture;
 
-Button testButton;
+const int BUTTON_TOTAL = 9;
+Button buttons[BUTTON_TOTAL];
 
 bool init()
 {
@@ -93,7 +95,7 @@ bool loadMedia()
       }
   }
 
-  if(!ticTacToe.loadFromFile("media/tic-tac-toe.png"))
+  if(!ticTacToeTexture.loadFromFile("media/tic-tac-toe.png"))
   {
     success = false;
   }
@@ -108,14 +110,20 @@ bool loadMedia()
     success = false;
   }
 
+  if(!blankTexture.loadFromFile("media/blank.png"))
+  {
+    success = false;
+  }
+
   return success;
 }
 
 void close()
 {
-  ticTacToe.free();
+  ticTacToeTexture.free();
   oTexture.free();
   xTexture.free();
+  blankTexture.free();
 
   TTF_CloseFont(gFont);
   gFont = NULL;
@@ -152,8 +160,12 @@ int main()
 
       SDL_Event e;
 
-      testButton.init(0, 0, &oTexture);
-
+      for (size_t i = 0; i < BUTTON_TOTAL; i++) {
+        int x = i / 3;
+        int y = i % 3;
+        //printf("%d, %d, %d\n", i, x, y);
+        buttons[i].init(x * 120, y * 90, &blankTexture);
+      }
       while(!quit)
       {
         while(SDL_PollEvent(&e) != 0)
@@ -163,11 +175,18 @@ int main()
             quit = true;
           }
 
-          testButton.eventHandle(e);
+          if(yourTurn)
+          {
+            for (size_t i = 0; i < BUTTON_TOTAL; i++) {
+              buttons[i].eventHandle(e);
+            }
+          }
         }
         SDL_RenderClear(gRenderer);
-        ticTacToe.render(0, 0);
-        testButton.render();
+        ticTacToeTexture.render(0, 0);
+        for (size_t i = 0; i < BUTTON_TOTAL; i++) {
+          buttons[i].render();
+        }
         turnTexture.render(0, 280);
         SDL_RenderPresent(gRenderer);
       }
