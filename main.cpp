@@ -12,9 +12,12 @@ const int SCREEN_HEIGHT = 480;
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
+TTF_Font* gFont = NULL;
+
 Sprite ticTacToe;
-Sprite imageO;
-Sprite imageX;
+Sprite oTexture;
+Sprite xTexture;
+Sprite turnTexture;
 
 bool init()
 {
@@ -51,7 +54,7 @@ bool init()
           success = false;
         }
 
-        if(TTF_Init() < 0)
+        if(TTF_Init() == -1)
         {
           printf("Failed to initialize SDL_ttf. SDL_ttf Error: %s\n", TTF_GetError());
           success = false;
@@ -71,28 +74,48 @@ bool init()
 bool loadMedia()
 {
   bool success = true;
+
+  gFont = TTF_OpenFont("media/WorkSans-VariableFont_wght.ttf", 28);
+  if(gFont == NULL)
+  {
+    printf("Failed to load WorkSans as the global font. SDL_ttf Error: %s\n", TTF_GetError());
+    success = false;
+  }
+  else
+  {
+      SDL_Color black = {0,0,0,255};
+      if(!turnTexture.loadFromRenderedText("Your Turn...", black))
+      {
+        success = false;
+      }
+  }
+
   if(!ticTacToe.loadFromFile("media/tic-tac-toe.png"))
   {
     success = false;
   }
 
-  if(!imageO.loadFromFile("media/o.png"))
+  if(!oTexture.loadFromFile("media/o.png"))
   {
     success = false;
   }
 
-  if(!imageX.loadFromFile("media/x.png"))
+  if(!xTexture.loadFromFile("media/x.png"))
   {
     success = false;
   }
+
   return success;
 }
 
 void close()
 {
   ticTacToe.free();
-  imageO.free();
-  imageX.free();
+  oTexture.free();
+  xTexture.free();
+
+  TTF_CloseFont(gFont);
+  gFont = NULL;
 
   SDL_DestroyRenderer(gRenderer);
   gRenderer = NULL;
@@ -135,6 +158,9 @@ int main()
         }
         SDL_RenderClear(gRenderer);
         ticTacToe.render(0, 0);
+        oTexture.render(0,0);
+        xTexture.render(0, 90);
+        turnTexture.render(0, 280);
         SDL_RenderPresent(gRenderer);
       }
     }

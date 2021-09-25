@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "sprite.h"
 #include "main.h"
 
@@ -31,7 +32,7 @@ bool Sprite::loadFromFile(std::string path)
   SDL_Surface* loadedSurface = IMG_Load(path.c_str());
   if(loadedSurface == NULL)
   {
-    printf("Failed to load %s. SDL_image Error: %s\n", IMG_GetError());
+    printf("Failed to load %s. SDL_image Error: %s\n", path.c_str(), IMG_GetError());
   }
   else
   {
@@ -54,7 +55,26 @@ bool Sprite::loadFromFile(std::string path)
 bool Sprite::loadFromRenderedText(std::string textTexture, SDL_Color textColor)
 {
   free();
-  return 0;
+  SDL_Surface* loadedSurface = TTF_RenderText_Solid(gFont, textTexture.c_str(), textColor);
+  if(loadedSurface == NULL)
+  {
+    printf("Failed to render text to surface. SDL_ttf Error: %s\n", TTF_GetError());
+  }
+  else
+  {
+    mTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+    if(mTexture == NULL)
+    {
+      printf("Failed to create texture from surface. SDL Error: %s\n", SDL_GetError());
+    }
+    else
+    {
+      mWidth = loadedSurface->w;
+      mHeight = loadedSurface->h;
+    }
+    SDL_FreeSurface(loadedSurface);
+  }
+  return mTexture != NULL;
 }
 
 void Sprite::render(int x, int y)
