@@ -205,6 +205,7 @@ int main()
         else if(checkWinState() == BOT_WINNER)
         {
           turnTexture.loadFromRenderedText("Bot Wins!!!", black);
+          yourTurn = false;
         }
 
         SDL_RenderClear(gRenderer);
@@ -231,7 +232,157 @@ int main()
 
 void aiTurn()
 {
+  //Delay for the effect of thinking
   SDL_Delay(500);
+
+  //Thinking about decision
+  for (size_t x = 0; x < 3; x++) {
+    int i = 0;
+    if(buttons[x].getSprite() == &xTexture)
+    {
+      i++;
+    }
+
+    if(buttons[x+3].getSprite() == &xTexture)
+    {
+      i++;
+    }
+
+    if(buttons[x+6].getSprite() == &xTexture)
+    {
+      i++;
+    }
+
+    if(i == 2)
+    {
+      if(buttons[x].getSprite() == &blankTexture)
+      {
+        buttons[x].setSprite(&oTexture);
+        yourTurn = true;
+        return;
+      }
+      else if(buttons[x+3].getSprite() == &blankTexture)
+      {
+        buttons[x+3].setSprite(&oTexture);
+        yourTurn = true;
+        return;
+      }
+      else if(buttons[x+6].getSprite() == &blankTexture)
+      {
+        buttons[x+6].setSprite(&oTexture);
+        yourTurn = true;
+        return;
+      }
+    }
+  }
+
+  for (size_t y = 0; y < 3; y++) {
+    int i = 0;
+    if(buttons[y*3].getSprite() == &xTexture)
+    {
+      i++;
+    }
+    if(buttons[y*3+1].getSprite() == &xTexture)
+    {
+      i++;
+    }
+    if(buttons[y*3+2].getSprite() == &xTexture)
+    {
+      i++;
+    }
+
+    if(i == 2)
+    {
+      if(buttons[y*3].getSprite() == &blankTexture)
+      {
+        buttons[y*3].setSprite(&oTexture);
+        yourTurn = true;
+        return;      }
+      else if(buttons[y*3+1].getSprite() == &blankTexture)
+      {
+        buttons[y*3+1].setSprite(&oTexture);
+        yourTurn = true;
+        return;      }
+      else if(buttons[y*3+2].getSprite() == &blankTexture)
+      {
+        buttons[y*3+2].setSprite(&oTexture);
+        yourTurn = true;
+        return;
+      }
+    }
+  }
+
+  int i = 0;
+  if(buttons[0].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(buttons[4].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(buttons[8].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(i == 2)
+  {
+    if(buttons[0].getSprite() == &blankTexture)
+    {
+      buttons[0].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+    if(buttons[4].getSprite() == &blankTexture)
+    {
+      buttons[4].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+    if(buttons[8].getSprite() == &blankTexture)
+    {
+      buttons[8].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+  }
+
+  i = 0;
+  if(buttons[2].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(buttons[4].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(buttons[6].getSprite() == &xTexture)
+  {
+    i++;
+  }
+  if(i == 2)
+  {
+    if(buttons[2].getSprite() == &blankTexture)
+    {
+      buttons[2].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+    if(buttons[4].getSprite() == &blankTexture)
+    {
+      buttons[4].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+    if(buttons[6].getSprite() == &blankTexture)
+    {
+      buttons[6].setSprite(&oTexture);
+      yourTurn = true;
+      return;
+    }
+  }
+
+  //Choice from randomness
   while(!yourTurn)
   {
     int i = rand() % 9;
@@ -245,8 +396,6 @@ void aiTurn()
 
 winState checkWinState()
 {
-  winState currentWinState = NO_WINNER;
-
   //Check if player winner
   for (size_t x = 0; x < 3; x++) {
     if(buttons[x].getSprite() == &xTexture)
@@ -255,7 +404,7 @@ winState checkWinState()
       {
         if(buttons[x+6].getSprite() == &xTexture)
         {
-          currentWinState = PLAYER_WINNER;
+          return PLAYER_WINNER;
         }
       }
     }
@@ -268,7 +417,7 @@ winState checkWinState()
       {
         if(buttons[y*3+2].getSprite() == &xTexture)
         {
-          currentWinState = PLAYER_WINNER;
+          return PLAYER_WINNER;
         }
       }
     }
@@ -280,14 +429,14 @@ winState checkWinState()
     {
       if(buttons[8].getSprite() == &xTexture)
       {
-        currentWinState = PLAYER_WINNER;
+        return PLAYER_WINNER;
       }
     }
     if(buttons[2].getSprite() == &xTexture)
     {
       if(buttons[6].getSprite() == &xTexture)
       {
-        currentWinState = PLAYER_WINNER;
+        return PLAYER_WINNER;
       }
     }
   }
@@ -301,7 +450,7 @@ winState checkWinState()
       {
         if(buttons[x+6].getSprite() == &oTexture)
         {
-          currentWinState = BOT_WINNER;
+          return BOT_WINNER;
         }
       }
     }
@@ -314,7 +463,7 @@ winState checkWinState()
       {
         if(buttons[y*3+2].getSprite() == &oTexture)
         {
-          currentWinState = BOT_WINNER;
+          return BOT_WINNER;
         }
       }
     }
@@ -326,17 +475,17 @@ winState checkWinState()
     {
       if(buttons[8].getSprite() == &oTexture)
       {
-        currentWinState = BOT_WINNER;
+        return BOT_WINNER;
       }
     }
     if(buttons[2].getSprite() == &oTexture)
     {
       if(buttons[6].getSprite() == &oTexture)
       {
-        currentWinState = BOT_WINNER;
+        return BOT_WINNER;
       }
     }
   }
 
-  return currentWinState;
+  return NO_WINNER;
 }

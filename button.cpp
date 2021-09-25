@@ -63,10 +63,6 @@ void Button::eventHandle(SDL_Event &e)
         yourTurn = false;
       }
     }
-    else
-    {
-      printf("Button Not Pressed!\n");
-    }
   }
 }
 
