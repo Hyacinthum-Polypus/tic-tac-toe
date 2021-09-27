@@ -23,6 +23,7 @@ Sprite turnTexture;
 
 SDL_Color black = {0,0,0,255};
 bool yourTurn = true;
+int currentTurn = 0;
 
 const int BUTTON_TOTAL = 9;
 Button buttons[BUTTON_TOTAL];
@@ -37,6 +38,8 @@ enum winState
 };
 
 winState checkWinState();
+
+void restart();
 
 bool init()
 {
@@ -164,8 +167,6 @@ int main()
 
       SDL_Event e;
 
-      int currentTurn = 0;
-
       for (size_t i = 0; i < BUTTON_TOTAL; i++) {
         int x = i / 3;
         int y = i % 3;
@@ -178,6 +179,11 @@ int main()
           if(e.type == SDL_QUIT)
           {
             quit = true;
+          }
+
+          if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+          {
+            restart();
           }
 
           if(yourTurn)
@@ -500,4 +506,13 @@ winState checkWinState()
   }
 
   return NO_WINNER;
+}
+
+void restart()
+{
+  for (size_t i = 0; i < BUTTON_TOTAL; i++) {
+    buttons[i].setSprite(&blankTexture);
+  }
+  yourTurn = true;
+  currentTurn = 0;
 }
